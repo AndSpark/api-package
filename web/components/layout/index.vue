@@ -19,4 +19,4 @@
   </html>
 </template>
 <script>
-</script>
+</script> 

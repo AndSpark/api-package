@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
 import { AppController } from './index.controller'
-import { ApiGeneratorModule } from '../api-generator/apiGenerator.module'
+import { PackageModule } from '../package/package.module'
 
 @Module({
-	imports: [ApiGeneratorModule],
+	imports: [PackageModule],
 	controllers: [AppController],
 })
 export class indexModule {}

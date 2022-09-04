@@ -3,22 +3,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { createApiDir, createIndex, onInit } from './help'
 import { compiler } from './compiler'
-
-export interface GeneratorConfig {
-	useClassInterface?: boolean
-}
-
-export interface ApiConfig {
-	name: string
-	npmrc: string
-	packageConfig?: Record<string, any>
-	registry?: string
-	generatorConfig?: GeneratorConfig
-	list: {
-		name: string
-		url: string
-	}[]
-}
+import { ApiConfig } from '~/typings/data/apiGenerator'
 
 export async function apiGenerate(apiConfig: ApiConfig) {
 	createApiDir()

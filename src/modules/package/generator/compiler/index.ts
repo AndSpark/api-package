@@ -3,7 +3,8 @@ import path from 'path'
 import fs from 'fs'
 import webpack from 'webpack'
 import { execSync } from 'child_process'
-import { ApiConfig } from '../index'
+import { ApiConfig } from '~/typings/data/apiGenerator'
+
 import { packageJson, tsconfig } from './constant'
 import config from './webpack.config'
 

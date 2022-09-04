@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+button,
+.n-button {
+	background-color: var(--n-color);
+}

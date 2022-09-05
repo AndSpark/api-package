@@ -15,6 +15,8 @@ import { ApiConfig } from '~/typings/data/apiGenerator'
 import { ApiForm } from './form'
 import dayjs from 'dayjs'
 import { request } from '~/web/api'
+import { getCamelCase } from '~/web/utils/getCamelCase'
+import axios from 'axios'
 export default defineComponent({
 	setup() {
 		const isShowDrawer = ref(false)
@@ -95,7 +97,18 @@ export default defineComponent({
 		}
 
 		if (__isBrowser__) {
-			fetchData()
+			fetchData().then(_ => {
+				list.value.forEach(v => {
+					const name = getCamelCase(v.name)
+					const script = document.createElement('script')
+					script.type = 'module'
+					script.innerText = ` import * as ${name} from './api-modules/${v.name}/index.js';window['${name}'] = ${name};${name}.install(axios)
+						`
+					document.body.appendChild(script)
+				})
+			})
+			//@ts-ignore
+			window.axios = axios
 		}
 
 		return {

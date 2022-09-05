@@ -6,7 +6,7 @@ import { execSync } from 'child_process'
 import { ApiConfig } from '~/typings/data/apiGenerator'
 
 import { packageJson, tsconfig } from './constant'
-import config from './webpack.config'
+import { configModule, config } from './webpack.config'
 
 const root = path.resolve(__dirname, '../../../api/')
 
@@ -18,10 +18,17 @@ export const compiler = async (apiConfig: ApiConfig) => {
 	return new Promise((res, rej) => {
 		webpack(config, (err, stats) => {
 			if (err || stats?.hasErrors()) {
-				rej(stats.compilation.errors?.[0])
+				console.log(err, stats)
+				rej(stats?.compilation.errors?.[0])
 			} else {
 				execSync('npm publish', { cwd: root })
 				res(version)
+			}
+		})
+
+		webpack(configModule(apiConfig.name), (err, stats) => {
+			if (err || stats?.hasErrors()) {
+				console.log(err, stats)
 			}
 		})
 	})

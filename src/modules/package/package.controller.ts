@@ -11,6 +11,11 @@ export class PackageController {
 		return await this.packageService.get()
 	}
 
+	@Get('package/:id/update')
+	async updatePackage(@Param('id') id: string): Promise<any> {
+		return await this.packageService.updatePackage(Number(id))
+	}
+
 	@Post('package')
 	async post(@Body('apiConfig') apiConfig: ApiConfig) {
 		return await this.packageService.post(apiConfig)

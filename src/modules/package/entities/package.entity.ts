@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm'
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { AbstractEntity } from '../../database/database.entity'
 
 @Entity()
@@ -6,7 +6,7 @@ export class PackageEntity extends AbstractEntity {
 	@Column()
 	name: string
 
-	@Column({ default: '0' })
+	@Column()
 	version: string
 
 	@Column({ default: 'https://registry.npmjs.org/' })
@@ -15,12 +15,18 @@ export class PackageEntity extends AbstractEntity {
 	@Column({ nullable: true })
 	npmrc: string
 
+	@Column({ nullable: true })
+	packageUpdateTime: string
+
 	@OneToMany(() => ApiInfoEntity, o => o.packageName, { cascade: true })
 	apiList: ApiInfoEntity[]
 }
 
 @Entity()
-export class ApiInfoEntity extends AbstractEntity {
+export class ApiInfoEntity {
+	@PrimaryGeneratedColumn()
+	id: number
+
 	@ManyToOne(() => PackageEntity, o => o.name)
 	packageName: string
 

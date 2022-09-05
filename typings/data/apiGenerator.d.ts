@@ -8,7 +8,7 @@ export interface ApiConfig {
 	packageConfig?: Record<string, any>
 	registry?: string
 	generatorConfig?: GeneratorConfig
-	list: {
+	apiList: {
 		name: string
 		url: string
 	}[]

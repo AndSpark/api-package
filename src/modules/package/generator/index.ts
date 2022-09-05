@@ -8,12 +8,12 @@ import { ApiConfig } from '~/typings/data/apiGenerator'
 export async function apiGenerate(apiConfig: ApiConfig) {
 	createApiDir()
 	await Promise.all(
-		apiConfig.list.map(({ name, url }) => {
+		apiConfig.apiList.map(({ name, url }) => {
 			return new Promise(res => {
 				generateApi({
 					url,
 					name,
-					templates: path.resolve(__dirname, './api-templates'),
+					templates: path.resolve(__dirname, './../../../../api-templates'),
 					httpClientType: 'axios', // or "fetch"
 					defaultResponseAsSuccess: false,
 					generateRouteTypes: false,
@@ -54,7 +54,7 @@ export async function apiGenerate(apiConfig: ApiConfig) {
 			})
 		})
 	)
-	createIndex(apiConfig.list.map(v => v.name))
+	createIndex(apiConfig.apiList.map(v => v.name))
 
-	await compiler(apiConfig)
+	return await compiler(apiConfig)
 }

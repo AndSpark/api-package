@@ -1,16 +1,15 @@
-import axios from 'axios'
-import { NCard, NDynamicInput, NForm, NFormItem, NInput, useMessage } from 'naive-ui'
+import { NCard, NDynamicInput, NForm, NFormItem, NInput } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { ApiConfig } from '~/typings/data/apiGenerator'
 
 const initForm: () => ApiConfig = () => ({
-	name: '',
+	name: 'test-api',
 	npmrc: '',
-	registry: '',
-	list: [
+	registry: 'https://govfun.com:10073/repository/npm-group/',
+	apiList: [
 		{
-			name: '',
-			url: '',
+			name: 'auth.ts',
+			url: 'http://192.168.200.12:5000/auth/v2/api-docs?group=AuthService%E5%BC%80%E6%94%BE%E6%8E%A5%E5%8F%A3',
 		},
 	],
 })
@@ -49,7 +48,7 @@ export const ApiForm = defineComponent({
 					</NFormItem>
 					<NCard title='Api接口列表'>
 						<NDynamicInput
-							v-model:value={this.formData.list}
+							v-model:value={this.formData.apiList}
 							onCreate={() => ({ name: '', url: '' })}
 							min={1}
 						>

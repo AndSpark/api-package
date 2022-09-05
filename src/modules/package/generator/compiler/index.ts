@@ -11,17 +11,17 @@ import config from './webpack.config'
 const root = path.resolve(__dirname, '../../../api/')
 
 export const compiler = async (apiConfig: ApiConfig) => {
-	await createPackage(apiConfig)
+	const { version } = await createPackage(apiConfig)
 	fs.writeFileSync(path.resolve(root, '.npmrc'), apiConfig.npmrc)
 	fs.writeFileSync(path.resolve(root, 'tsconfig.json'), tsconfig)
-	execSync('npm install', { cwd: root })
+	// execSync('npm install', { cwd: root })
 	return new Promise((res, rej) => {
 		webpack(config, (err, stats) => {
 			if (err || stats?.hasErrors()) {
-				rej(err)
+				rej(stats.compilation.errors?.[0])
 			} else {
 				execSync('npm publish', { cwd: root })
-				res('done')
+				res(version)
 			}
 		})
 	})
@@ -42,13 +42,25 @@ const createPackage = async (apiConfig: ApiConfig) => {
 			version = res.data['dist-tags']?.latest
 		}
 	} catch (error: any) {
-		console.log(error)
-		throw new Error(error)
+		if (error.response.status !== 404) {
+			console.log(error)
+			throw new Error(error)
+		}
 	}
 
-	const packageData = packageJson(name, version, config)
+	const packageData = packageJson(name, version, {
+		...config,
+		...{
+			publishConfig: {
+				registry,
+			},
+		},
+	})
 	fs.writeFileSync(path.resolve(root, 'package.json'), packageData)
 	if (version) {
 		execSync('npm version patch', { cwd: root })
 	}
+	const packageJSON = JSON.parse(fs.readFileSync(path.resolve(root, 'package.json'), 'utf-8'))
+
+	return { version: packageJSON.version }
 }

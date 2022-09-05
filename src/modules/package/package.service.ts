@@ -3,6 +3,7 @@ import { Repository } from 'typeorm'
 import { ApiInfoEntity, PackageEntity } from './entities/package.entity'
 import { ApiConfig } from '~/typings/data/apiGenerator'
 import axios from 'axios'
+import { apiGenerate } from './generator'
 
 @Injectable()
 export class PackageService {
@@ -13,16 +14,39 @@ export class PackageService {
 		private apiInfoRepository: Repository<ApiInfoEntity>
 	) {}
 
+	async updatePackage(id: number) {
+		const target = await this.packageRepository.findOne({ where: { id }, relations: ['apiList'] })
+		if (target) {
+			try {
+				const version = (await apiGenerate(target)) as string
+				return await this.packageRepository.update({ id }, { version })
+			} catch (error) {
+				console.log(error)
+				throw new HttpException('更新package失败，' + error?.message || error, 400)
+			}
+		} else {
+			throw new HttpException('package不存在', 404)
+		}
+	}
+
 	async post(apiConfig: ApiConfig) {
 		const res = await this.checkPackage(apiConfig.name, apiConfig.registry)
+
 		if (res !== null) {
 			throw new HttpException('该package已存在', 400)
+		}
+		try {
+			await apiGenerate(apiConfig)
+		} catch (error) {
+			console.log(error)
+			throw new HttpException('创建package失败，' + error?.message || error, 400)
 		}
 		const packageInfo = this.packageRepository.create({
 			name: apiConfig.name,
 			npmrc: apiConfig.npmrc || '',
 			registry: apiConfig.registry,
-			apiList: apiConfig.list.map(v => {
+			version: '1.0.0',
+			apiList: apiConfig.apiList.map(v => {
 				return this.apiInfoRepository.create({
 					name: v.name,
 					url: v.url,
@@ -34,15 +58,7 @@ export class PackageService {
 	}
 
 	async get() {
-		axios
-			.get('https://registry.npmjs.org/vue-class-validator-22')
-			.then(res => {
-				console.log(res)
-			})
-			.catch(err => {
-				console.log(err.response.status)
-			})
-		return await this.packageRepository.find()
+		return await this.packageRepository.find({ relations: ['apiList'] })
 	}
 
 	async del(id: number) {
@@ -56,19 +72,19 @@ export class PackageService {
 				name: apiConfig.name,
 				npmrc: apiConfig.npmrc || '',
 				registry: apiConfig.registry,
-				apiList: apiConfig.list.map(v => {
-					return this.apiInfoRepository.create({
-						name: v.name,
-						url: v.url,
-					})
-				}),
+				// apiList: apiConfig.list.map(v => {
+				// 	return this.apiInfoRepository.create({
+				// 		name: v.name,
+				// 		url: v.url,
+				// 	})
+				// }),
 			}
 		)
 	}
 
 	async checkPackage(name: string, registry: string) {
 		try {
-			const res = await axios.get((registry + '/').replace('//', '/') + name)
+			const res = await axios.get(registry + name)
 			return res.data
 		} catch (error) {
 			if (error?.response?.status === 404) {

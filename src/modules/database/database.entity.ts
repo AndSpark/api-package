@@ -5,8 +5,8 @@ export abstract class AbstractEntity extends BaseEntity {
 	id: number
 
 	@CreateDateColumn()
-	create_time: string
+	createTime: string
 
 	@UpdateDateColumn()
-	update_time: string
+	updateTime: string
 }

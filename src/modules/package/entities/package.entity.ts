@@ -18,7 +18,7 @@ export class PackageEntity extends AbstractEntity {
 	@Column({ nullable: true })
 	packageUpdateTime: string
 
-	@OneToMany(() => ApiInfoEntity, o => o.packageName, { cascade: true })
+	@OneToMany(() => ApiInfoEntity, o => o.packageName, { cascade: ['insert', 'update', 'remove'] })
 	apiList: ApiInfoEntity[]
 }
 

@@ -9,6 +9,7 @@ export interface ApiConfig {
 	registry?: string
 	generatorConfig?: GeneratorConfig
 	apiList: {
+		id?: number
 		name: string
 		url: string
 	}[]

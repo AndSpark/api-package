@@ -112,7 +112,7 @@ export const createIndex = (fileNames: string[]) => {
 			return `export { ${v.replace('.ts', '')}Api } from './${v.replace('.ts', '')}'`
 		})
 		.join('\n')
-	content += `\nexport { install } from './_request'`
+	content += `\nexport { setupApi } from './_request'`
 	fs.writeFileSync(path.resolve(apiDir, 'index.ts'), content)
 	fs.writeFileSync(path.resolve(apiDir, '_request.ts'), indexTs)
 }
@@ -145,23 +145,23 @@ function removeDir(dir: string) {
 const indexTs = `
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
 
-let isInstall = false
+let isSetup = false
 
 interface HttpClient {
-	request: <T = any, _E = any>(config: AxiosRequestConfig) => Promise<AxiosResponse<T>>
+	request: <T = any, _E = any>(config: AxiosRequestConfig) => Promise<T>
 }
 
 //@ts-ignore
 export const httpClient: HttpClient = {
 	request(config: AxiosRequestConfig):any {
-		if (!isInstall) {
-			throw new Error('please install http client first')
+		if (!isSetup) {
+			throw new Error('please setup http client first')
 		}
 	},
 }
 
-export const install = (request: HttpClient['request']) => {
+export const setupApi = (request: HttpClient['request']) => {
 	httpClient.request = request
-	isInstall = true
+	isSetup = true
 }
 `

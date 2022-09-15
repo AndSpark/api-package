@@ -37,5 +37,5 @@ export enum ContentType {
 
 
 interface HttpClient {
-	request: <T = any, _E = any>(config: AxiosRequestConfig) => Promise<AxiosResponse<T>>;
+	request: <T = any, _E = any>(config: AxiosRequestConfig) => Promise<T>;
 }

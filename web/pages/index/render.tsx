@@ -10,7 +10,7 @@ import {
 	useMessage,
 } from 'naive-ui'
 import { TableColumns } from 'naive-ui/es/data-table/src/interface'
-import { defineComponent, nextTick, ref } from 'vue'
+import { computed, defineComponent, nextTick, ref } from 'vue'
 import { ApiConfig } from '~/typings/data/apiGenerator'
 import { ApiForm } from './form'
 import dayjs from 'dayjs'
@@ -82,6 +82,7 @@ export default defineComponent({
 				},
 			},
 		]
+
 		const { list, fetchData, createData, updateData, delData, loading, updatePackage } =
 			useApiCRUD()
 
@@ -96,14 +97,18 @@ export default defineComponent({
 			isShowDrawer.value = false
 		}
 
+		const formTitle = computed(() => {
+			if (editFormType.value === 'create') return '新增Package'
+			return '修改Package'
+		})
+
 		if (__isBrowser__) {
 			fetchData().then(_ => {
 				list.value.forEach(v => {
 					const name = getCamelCase(v.name)
 					const script = document.createElement('script')
 					script.type = 'module'
-					script.innerText = ` import * as ${name} from './api-modules/${v.name}/index.js';window['${name}'] = ${name};${name}.install(axios)
-						`
+					script.innerText = ` import * as ${name} from './api-modules/${v.name}/index.js';window['${name}'] = ${name};${name}.install(axios)`
 					document.body.appendChild(script)
 				})
 			})
@@ -121,6 +126,7 @@ export default defineComponent({
 			editFormType,
 			updatePackage,
 			loading,
+			formTitle,
 		}
 	},
 	render() {
@@ -145,13 +151,17 @@ export default defineComponent({
 				</NCard>
 				<NDataTable data={this.list} columns={this.columns}></NDataTable>
 				<NDrawer v-model:show={this.isShowDrawer} width={'900px'}>
-					<NDrawerContent title='新增Package' closable>
+					<NDrawerContent title={this.formTitle} closable>
 						<NSpin show={this.loading}>
 							{{
 								description: () => <span>正在生成package中，请稍后</span>,
 								default: () => (
 									<div class='flex h-full w-full flex-col gap-4'>
-										<ApiForm ref='apiForm' class='flex-1'></ApiForm>
+										<ApiForm
+											ref='apiForm'
+											isEdit={this.editFormType === 'update'}
+											class='flex-1'
+										></ApiForm>
 										<NSpace justify={'end'}>
 											{this.editFormType === 'create' ? (
 												<NButton type={'primary'} onClick={this.createApi}>

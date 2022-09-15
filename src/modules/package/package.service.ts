@@ -66,20 +66,13 @@ export class PackageService {
 	}
 
 	async update(id: number, apiConfig: ApiConfig) {
-		return await this.packageRepository.update(
-			{ id },
-			{
-				name: apiConfig.name,
-				npmrc: apiConfig.npmrc || '',
-				registry: apiConfig.registry,
-				// apiList: apiConfig.list.map(v => {
-				// 	return this.apiInfoRepository.create({
-				// 		name: v.name,
-				// 		url: v.url,
-				// 	})
-				// }),
-			}
-		)
+		return await this.packageRepository.save({
+			id,
+			name: apiConfig.name,
+			npmrc: apiConfig.npmrc || '',
+			registry: apiConfig.registry,
+			apiList: apiConfig.apiList,
+		})
 	}
 
 	async checkPackage(name: string, registry: string) {

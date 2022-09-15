@@ -36,10 +36,9 @@ export const compiler = async (apiConfig: ApiConfig) => {
 
 const createPackage = async (apiConfig: ApiConfig) => {
 	let registry = 'https://registry.npmjs.org/'
-	const config = apiConfig.packageConfig
 	const name = apiConfig.name
-	if (config?.registry) {
-		registry = config.registry
+	if (apiConfig?.registry) {
+		registry = apiConfig.registry
 	}
 	let res: any,
 		version = '1.0.0'

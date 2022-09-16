@@ -62,6 +62,10 @@ export class PackageService {
 	}
 
 	async del(id: number) {
+		const target = await this.packageRepository.findOne({ where: { id }, relations: ['apiList'] })
+		await Promise.all(
+			target.apiList?.map(async v => await this.apiInfoRepository.delete({ id: v.id }))
+		)
 		return await this.packageRepository.delete({ id })
 	}
 

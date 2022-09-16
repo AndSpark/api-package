@@ -53,31 +53,29 @@ export default defineComponent({
 				width: '300px',
 				render(data) {
 					return (
-						<NSpin show={loading.value}>
-							<NSpace>
-								<NButton
-									onClick={() => {
-										editFormType.value = 'update'
-										isShowDrawer.value = true
-										nextTick().then(_ => {
-											apiForm.value.formData = data
-											apiForm.value.formData.list = data.apiList
-										})
-									}}
-								>
-									详情
-								</NButton>
-								<NButton type={'info'} onClick={() => updatePackage(data.id)}>
-									更新
-								</NButton>
-								<NPopconfirm onPositiveClick={() => delData(data.id)}>
-									{{
-										trigger: () => <NButton type={'error'}>删除</NButton>,
-										default: () => <span>确认删除吗</span>,
-									}}
-								</NPopconfirm>
-							</NSpace>
-						</NSpin>
+						<NSpace>
+							<NButton
+								onClick={() => {
+									editFormType.value = 'update'
+									isShowDrawer.value = true
+									nextTick().then(_ => {
+										apiForm.value.formData = data
+										apiForm.value.formData.list = data.apiList
+									})
+								}}
+							>
+								详情
+							</NButton>
+							<NButton type={'info'} onClick={() => updatePackage(data.id)}>
+								更新
+							</NButton>
+							<NPopconfirm onPositiveClick={() => delData(data.id)}>
+								{{
+									trigger: () => <NButton type={'error'}>删除</NButton>,
+									default: () => <span>确认删除吗</span>,
+								}}
+							</NPopconfirm>
+						</NSpace>
 					)
 				},
 			},
@@ -131,55 +129,57 @@ export default defineComponent({
 	},
 	render() {
 		return (
-			<NSpace vertical>
-				<NCard>
-					<NSpace justify='end'>
-						<NButton>刷新</NButton>
-						<NButton
-							type={'info'}
-							onClick={() => {
-								this.isShowDrawer = true
-								this.editFormType = 'create'
-								this.$nextTick().then(_ => {
-									this.apiForm.initData()
-								})
-							}}
-						>
-							新增
-						</NButton>
-					</NSpace>
-				</NCard>
-				<NDataTable data={this.list} columns={this.columns}></NDataTable>
-				<NDrawer v-model:show={this.isShowDrawer} width={'900px'}>
-					<NDrawerContent title={this.formTitle} closable>
-						<NSpin show={this.loading}>
-							{{
-								description: () => <span>正在生成package中，请稍后</span>,
-								default: () => (
-									<div class='flex h-full w-full flex-col gap-4'>
-										<ApiForm
-											ref='apiForm'
-											isEdit={this.editFormType === 'update'}
-											class='flex-1'
-										></ApiForm>
-										<NSpace justify={'end'}>
-											{this.editFormType === 'create' ? (
-												<NButton type={'primary'} onClick={this.createApi}>
-													保存
-												</NButton>
-											) : (
-												<NButton type={'success'} onClick={this.updateApi}>
-													修改
-												</NButton>
-											)}
-										</NSpace>
-									</div>
-								),
-							}}
-						</NSpin>
-					</NDrawerContent>
-				</NDrawer>
-			</NSpace>
+			<NSpin show={this.loading}>
+				<NSpace vertical>
+					<NCard>
+						<NSpace justify='end'>
+							<NButton>刷新</NButton>
+							<NButton
+								type={'info'}
+								onClick={() => {
+									this.isShowDrawer = true
+									this.editFormType = 'create'
+									this.$nextTick().then(_ => {
+										this.apiForm.initData()
+									})
+								}}
+							>
+								新增
+							</NButton>
+						</NSpace>
+					</NCard>
+					<NDataTable data={this.list} columns={this.columns}></NDataTable>
+					<NDrawer v-model:show={this.isShowDrawer} width={'900px'}>
+						<NDrawerContent title={this.formTitle} closable>
+							<NSpin show={this.loading}>
+								{{
+									description: () => <span>正在生成package中，请稍后</span>,
+									default: () => (
+										<div class='flex h-full w-full flex-col gap-4'>
+											<ApiForm
+												ref='apiForm'
+												isEdit={this.editFormType === 'update'}
+												class='flex-1'
+											></ApiForm>
+											<NSpace justify={'end'}>
+												{this.editFormType === 'create' ? (
+													<NButton type={'primary'} onClick={this.createApi}>
+														保存
+													</NButton>
+												) : (
+													<NButton type={'success'} onClick={this.updateApi}>
+														修改
+													</NButton>
+												)}
+											</NSpace>
+										</div>
+									),
+								}}
+							</NSpin>
+						</NDrawerContent>
+					</NDrawer>
+				</NSpace>
+			</NSpin>
 		)
 	},
 })

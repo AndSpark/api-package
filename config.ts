@@ -11,6 +11,7 @@ const userConfig: UserConfig = {
 			},
 		}
 	},
+	serverPort: 8188,
 }
 
 export { userConfig }

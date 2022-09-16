@@ -27,7 +27,7 @@ export default defineComponent({
 				} else {
 					theme.value = darkTheme
 				}
-			}, 400)
+			}, 100)
 		}
 		return {
 			theme,

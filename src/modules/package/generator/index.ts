@@ -9,7 +9,7 @@ export async function apiGenerate(apiConfig: ApiConfig) {
 	createApiDir()
 	await Promise.all(
 		apiConfig.apiList.map(({ name, url }) => {
-			return new Promise(res => {
+			return new Promise((res, rej) => {
 				generateApi({
 					url,
 					name,
@@ -36,21 +36,25 @@ export async function apiGenerate(apiConfig: ApiConfig) {
 					hooks: {
 						onInit,
 					},
-				}).then(({ files, configuration }) => {
-					files.forEach(({ content, name }) => {
-						let data = content
-						if (apiConfig.generatorConfig?.useClassInterface !== false) {
-							data = content
-								.replace(/class[\s\S]+?\}/g, p => {
-									return p.replace(/ object;/g, ' any;')
-								})
-								.replace(/\= object;/g, '= any;')
-								.replace(/ object>/g, ' any>')
-						}
-						fs.writeFileSync(path.resolve(__dirname, '../../api', name), data)
-					})
-					res('')
 				})
+					.then(({ files, configuration }) => {
+						files.forEach(({ content, name }) => {
+							let data = content
+							if (apiConfig.generatorConfig?.useClassInterface !== false) {
+								data = content
+									.replace(/class[\s\S]+?\}/g, p => {
+										return p.replace(/ object;/g, ' any;')
+									})
+									.replace(/\= object;/g, '= any;')
+									.replace(/ object>/g, ' any>')
+							}
+							fs.writeFileSync(path.resolve(__dirname, '../../api', name), data)
+						})
+						res('')
+					})
+					.catch(e => {
+						rej(e)
+					})
 			})
 		})
 	)

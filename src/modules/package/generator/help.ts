@@ -109,7 +109,7 @@ const createOptionId = (str: string) => {
 export const createIndex = (fileNames: string[]) => {
 	let content = fileNames
 		.map(v => {
-			return `export { ${v.replace('.ts', '')}Api } from './${v.replace('.ts', '')}'`
+			return `export * from './${v.replace('.ts', '')}'`
 		})
 		.join('\n')
 	content += `\nexport { setupApi } from './_request'`

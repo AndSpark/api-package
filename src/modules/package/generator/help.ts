@@ -109,7 +109,7 @@ const createOptionId = (str: string) => {
 export const createIndex = (fileNames: string[]) => {
 	let content = fileNames
 		.map(v => {
-			return `export * from './${v.replace('.ts', '')}'`
+			return `export {${v.replace('.ts', '')}Api} from './${v.replace('.ts', '')}'`
 		})
 		.join('\n')
 	content += `\nexport { setupApi } from './_request'`
@@ -126,7 +126,7 @@ export const createApiDir = () => {
 	}
 }
 
-function removeDir(dir: string) {
+export function removeDir(dir: string) {
 	let files = fs.readdirSync(dir)
 	for (var i = 0; i < files.length; i++) {
 		let newPath = path.join(dir, files[i])

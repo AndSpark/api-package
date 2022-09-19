@@ -1,3 +1,6 @@
+import path from 'path'
+export const apiPackageRoot = path.resolve(__dirname, '../../../api-package')
+
 export const packageJson = (
 	name: string,
 	version: string = '1.0.0',
@@ -7,13 +10,13 @@ export const packageJson = (
 		{
 			name,
 			version,
-			main: 'dist/index.js',
+			main: 'index.js',
 			license: 'private',
 			dependencies: {
 				axios: '0.27.2',
 			},
 			...configs,
-			files: ['dist/*'],
+			files: ['*.js', '*.d.ts', '*.js.map'],
 		},
 		null,
 		2
@@ -24,8 +27,8 @@ export const tsconfig = `
 	"compilerOptions": {
 		"target": "ES2015",
 		"declaration": true,
-		"useDefineForClassFields": true,
-		"outDir": "dist",
+		"useDefineForClassFields": false,
+		"outDir": "../api-package",
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
